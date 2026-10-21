@@ -1,0 +1,121 @@
+---
+interface Props {
+  showStoryToggle?: boolean;
+}
+const { showStoryToggle = true } = Astro.props;
+---
+
+<header class="site-header">
+  <a class="skip" href="#main">Skip to content</a>
+  <nav aria-label="Sections">
+    <a href="/#projects">Projects</a>
+    <a href="/#now">Now</a>
+    <a href="/#writing">Writing</a>
+    <a href="/#about">About</a>
+    <a href="/#contact">Contact</a>
+  </nav>
+  {
+    showStoryToggle && (
+      <a class="story-toggle" href="/story">
+        <span class="dot" aria-hidden="true" />
+        Story mode
+      </a>
+    )
+  }
+</header>
+
+<script is:inline>
+  (() => {
+    const h = document.querySelector(".site-header");
+    const update = () => h.classList.toggle("scrolled", window.scrollY > 24);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  })();
+</script>
+
+<style>
+  /* Floats over the hero so its confetti runs to the top of the page;
+     gains a soft background once the page has scrolled (see script below). */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 14px var(--gutter);
+    background: transparent;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .site-header.scrolled {
+    background: color-mix(in srgb, var(--ivory) 92%, transparent);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--sorrel) 15%, transparent);
+  }
+  .skip {
+    position: absolute;
+    left: -9999px;
+  }
+  .skip:focus {
+    left: var(--gutter);
+    top: 8px;
+    background: var(--wine);
+    color: var(--ivory);
+    padding: 8px 14px;
+    border-radius: 999px;
+  }
+  nav {
+    display: flex;
+    gap: 22px;
+    margin-left: auto;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  nav a {
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+  }
+  nav a:hover {
+    border-color: var(--gold);
+  }
+  /* Story mode is desktop only: big screen and a mouse or trackpad */
+  .story-toggle {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--sorrel);
+    color: var(--ivory);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform 0.25s var(--ease-out), background 0.25s;
+  }
+  .story-toggle:hover {
+    background: var(--wine);
+    transform: translateY(-2px);
+  }
+  .story-toggle .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gold-orb);
+  }
+  @media (min-width: 1024px) and (pointer: fine) {
+    .story-toggle {
+      display: inline-flex;
+    }
+  }
+  @media (max-width: 720px) {
+    nav {
+      margin-left: 0;
+      gap: 16px;
+      font-size: 14px;
+      overflow-x: auto;
+    }
+  }
+</style>

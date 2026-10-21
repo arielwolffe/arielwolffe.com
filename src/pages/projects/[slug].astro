@@ -1,0 +1,253 @@
+---
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { projects, type Project } from "../../content/site";
+
+export function getStaticPaths() {
+  return projects.filter((p) => p.caseStudy).map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project } = Astro.props as { project: Project };
+const cs = project.caseStudy!;
+const others = projects.filter((p) => p.caseStudy && p.slug !== project.slug);
+const dots = ["var(--hibiscus)", "var(--gold-orb)", "var(--sea)", "var(--sorrel)"];
+---
+
+<Base title={`${project.name} · Ariel Wolffe`} description={project.summary}>
+  <Header />
+  <main id="main">
+    <section class="cs-hero">
+      <div class="dot-a" aria-hidden="true"></div>
+      <div class="orb dot-b" aria-hidden="true"></div>
+      <div class="wrap narrow">
+        <a class="back" href="/#projects">← All projects</a>
+        <p class={`status ${project.status === "Live" ? "live" : ""}`}>{project.status}</p>
+        <h1>{project.name}</h1>
+        <p class="one">{project.oneLiner}</p>
+        <p class="lede">{project.summary}</p>
+      </div>
+    </section>
+
+    <article class="story">
+      <div class="wrap narrow">
+        {
+          cs.sections.map((s, i) => (
+            <section class="chapter">
+              <span class="dot" style={`background:${dots[i % dots.length]}`} aria-hidden="true" />
+              <h2>{s.heading}</h2>
+              {s.body.map((b) => (
+                <p>{b}</p>
+              ))}
+            </section>
+          ))
+        }
+
+        <p class="closer">
+          <em class="twist">{cs.closer.text}</em>
+          {
+            cs.closer.link && (
+              <a class="button" href={cs.closer.link.href} target="_blank" rel="noopener">
+                {cs.closer.link.label} ↗
+              </a>
+            )
+          }
+        </p>
+
+        <aside class="hood" aria-labelledby="hood-title">
+          <h2 id="hood-title" class="hood-title">Under the hood</h2>
+          <dl>
+            <div><dt>My part</dt><dd>{cs.underTheHood.myPart}</dd></div>
+            <div><dt>Since</dt><dd>{cs.underTheHood.since}</dd></div>
+            <div class="wide"><dt>Built with</dt><dd>{cs.underTheHood.stack.join(" · ")}</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </article>
+
+    {
+      others.length > 0 && (
+        <section class="band sorrel">
+          <div class="wrap narrow">
+            <p class="kicker">Next project</p>
+            {others.map((o) => (
+              <a class="next" href={`/projects/${o.slug}`}>
+                <span class="next-name">{o.name} →</span>
+                <em class="twist">{o.oneLiner}</em>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .cs-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(120px, 18vh, 200px) 0 40px;
+  }
+  .back {
+    display: table; /* own line, but only as wide as the link */
+    font-weight: 700;
+    margin-bottom: 28px;
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+  }
+  h1 {
+    font-size: clamp(44px, 7.5vw, 104px);
+    line-height: 0.95;
+    margin: 10px 0 16px;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  /* The title can use the full width; the text below stays at reading width */
+  .cs-hero .wrap {
+    max-width: var(--max);
+  }
+  .cs-hero .one,
+  .cs-hero .lede {
+    max-width: 760px;
+  }
+  .one {
+    font-family: var(--font-italic);
+    font-style: italic;
+    font-size: clamp(22px, 2.6vw, 30px);
+    color: var(--hibiscus-text);
+    margin: 0 0 18px;
+  }
+  .lede {
+    font-size: clamp(19px, 2.2vw, 23px);
+  }
+  .dot-a {
+    position: absolute;
+    width: clamp(160px, 24vw, 340px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--hibiscus);
+    right: -6vw;
+    top: -6vw;
+  }
+  .dot-b {
+    position: absolute;
+    width: clamp(50px, 6vw, 90px);
+    aspect-ratio: 1;
+    right: 14vw;
+    bottom: 10%;
+    animation: drift 8s ease-in-out infinite;
+  }
+
+  .story {
+    padding: 40px 0 100px;
+  }
+  .chapter {
+    position: relative;
+    padding: 36px 0 8px 40px;
+  }
+  .chapter .dot {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+  }
+  .chapter::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 76px;
+    bottom: -30px;
+    width: 2px;
+    background: color-mix(in srgb, var(--sorrel) 15%, transparent);
+  }
+  .chapter:last-of-type::before {
+    display: none;
+  }
+  .chapter h2 {
+    font-size: clamp(32px, 4.4vw, 52px);
+    margin-bottom: 14px;
+  }
+  .chapter p {
+    font-size: clamp(19px, 2vw, 22px);
+    line-height: 1.6;
+  }
+  .closer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+    margin: 40px 0 56px 40px;
+  }
+  .closer .twist {
+    font-size: clamp(24px, 3vw, 34px);
+    color: var(--hibiscus-text);
+  }
+
+  .hood {
+    background: var(--cream);
+    border-radius: 18px;
+    padding: 24px 28px;
+  }
+  .hood-title {
+    font-size: 13px;
+    font-family: var(--font-body);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--sorrel);
+    margin: 0 0 14px;
+  }
+  .hood dl {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px 24px;
+    margin: 0;
+  }
+  .hood .wide {
+    grid-column: 1 / -1;
+  }
+  .hood dt {
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .hood dd {
+    margin: 2px 0 0;
+    font-size: 15px;
+  }
+
+  .next {
+    display: block;
+    text-decoration: none;
+    padding: 18px 0;
+    border-top: 1px solid color-mix(in srgb, var(--ivory) 25%, transparent);
+  }
+  .next-name {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+  }
+  .next:hover .next-name {
+    color: var(--gold);
+  }
+  @media (max-width: 720px) {
+    .hood dl {
+      grid-template-columns: 1fr;
+    }
+    .dot-b {
+      display: none;
+    }
+    .chapter {
+      padding-left: 32px;
+    }
+    .closer {
+      margin-left: 0;
+    }
+  }
+</style>

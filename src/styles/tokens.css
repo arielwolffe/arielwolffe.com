@@ -1,0 +1,98 @@
+/* Brand v4: "Carnival, poured over sorrel". Source: career/brand/brand.md §5b. */
+@import "@fontsource/gloock/400.css";
+@import "@fontsource/fraunces/400-italic.css";
+@import "@fontsource/fraunces/600-italic.css";
+@import "@fontsource-variable/manrope";
+
+:root {
+  --ivory: #faf5ec;
+  --cream: #f6ecdf;
+  --sorrel: #6e1a2a;
+  --wine: #3d0f1c;
+  --gold: #d9a441;
+  --gold-light: #ecc36f;
+  --gold-deep: #a97a26;
+  --hibiscus: #e0435a;
+  --hibiscus-text: #c93450; /* hibiscus as text on ivory (4.7:1) */
+  --sea: #1d6f6a;
+  --blush: #e9b8a7;
+
+  --gold-orb: radial-gradient(circle at 35% 35%, var(--gold-light), var(--gold) 55%, var(--gold-deep));
+
+  --font-display: "Gloock", Georgia, serif;
+  --font-italic: "Fraunces", Georgia, serif;
+  --font-body: "Manrope Variable", system-ui, sans-serif;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --max: 1120px;
+  --gutter: clamp(20px, 5vw, 48px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--wine);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* The italic twist: second half of a headline */
+em.twist {
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--sorrel);
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--hibiscus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
